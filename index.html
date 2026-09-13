@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cakes & Candies</title>
 
+<<<<<<< HEAD
 <style>
     :root {
         --bg: #fff7ed;
@@ -505,6 +506,9 @@
         }
     }
 </style>
+=======
+<link rel="stylesheet" href="styles.css">
+>>>>>>> 7b8078189866608ae311f9e5df22f1fecefa6031
 </head>
 
 <body>
@@ -526,6 +530,11 @@
     <button id="nav-inventory" onclick="showPage('inventory')">🎒 Inventory</button>
     <button id="nav-pantry" onclick="showPage('pantry')">⭐ Pantry</button>
     <button id="nav-sell" onclick="showPage('sell')">💵 Sell</button>
+<<<<<<< HEAD
+=======
+    <button id="nav-stats" onclick="showPage('stats')">📊 Stats</button>
+    <button id="nav-minigames" onclick="showPage('minigames')">🎮 Minigames</button>
+>>>>>>> 7b8078189866608ae311f9e5df22f1fecefa6031
     <button id="nav-account" onclick="showPage('account')">👤 Account</button>
 </div>
 
@@ -618,33 +627,104 @@
     <section id="sell" class="page">
         <h2>💵 Sell Desserts</h2>
         <p style="margin:8px 0 18px;">
+<<<<<<< HEAD
             Sell your desserts directly to the seller.
         </p>
+=======
+            Sell your desserts directly to the seller. Pantry desserts are protected.
+        </p>
+        <div class="sell-all-row">
+            <button class="sell-all-btn" onclick="sellAll()">💰 Sell All (Except Pantry)</button>
+        </div>
+>>>>>>> 7b8078189866608ae311f9e5df22f1fecefa6031
 
         <div id="sellList"></div>
     </section>
 
+<<<<<<< HEAD
     <!-- ACCOUNT -->
 
+=======
+
+    <!-- STATS -->
+    <section id="stats" class="page">
+        <div class="merchant-info">
+            <div>
+                <h2>📊 Lifetime Stats</h2>
+                <p>These stats survive Rebirth.</p>
+            </div>
+            <button class="small-btn" onclick="renderStats()">↻ Refresh</button>
+        </div>
+        <div id="statsContent"></div>
+
+        <div class="rebirth-card">
+            <div>
+                <h3>🌟 Rebirth</h3>
+                <p>Requires $50,000,000. Resets your current money and inventory, but keeps lifetime progress.</p>
+                <p id="rebirthStatus"></p>
+            </div>
+            <button class="rebirth-btn" onclick="rebirth()">REBIRTH — $50M</button>
+        </div>
+    </section>
+
+    <!-- MINIGAMES -->
+    <section id="minigames" class="page">
+        <div class="merchant-info">
+            <div>
+                <h2>🎮 Minigames</h2>
+                <p>Play quick games and earn unopened dessert packs.</p>
+            </div>
+        </div>
+        <div id="minigameContent"></div>
+    </section>
+
+    <!-- ACCOUNT -->
+>>>>>>> 7b8078189866608ae311f9e5df22f1fecefa6031
     <section id="account" class="page">
         <div class="login-box">
             <h2>👤 Account</h2>
             <br>
+<<<<<<< HEAD
 
             <p>
                 Signing in is optional. You can play without an account.
             </p>
 
             <br>
+=======
+            <p>Sign in is optional. Your local game save still works without an account.</p>
+
+            <div class="oauth-grid">
+                <button class="oauth-btn google" onclick="startExternalSignIn('Google')">🔵 Sign in with Google</button>
+                <button class="oauth-btn apple" onclick="startExternalSignIn('Apple')"> Sign in with Apple</button>
+                <button class="oauth-btn microsoft" onclick="startExternalSignIn('Microsoft')">🪟 Sign in with Microsoft</button>
+            </div>
+
+            <div class="account-divider"><span>OR</span></div>
+>>>>>>> 7b8078189866608ae311f9e5df22f1fecefa6031
 
             <input id="loginEmail" type="email" placeholder="Email">
             <input id="loginName" type="text" placeholder="Username">
 
+<<<<<<< HEAD
             <button class="small-btn" onclick="signIn()">
                 Sign In
             </button>
 
             <p id="accountStatus" style="margin-top:15px;"></p>
+=======
+            <button class="small-btn" onclick="signIn()">Sign In</button>
+
+            <p id="accountStatus" style="margin-top:15px;"></p>
+
+            <div class="account-note">
+                <strong>🔐 Real OAuth note:</strong>
+                Google, Apple and Microsoft authentication requires a real OAuth/authentication backend.
+                The frontend buttons are prepared without pretending that a secure login exists.
+            </div>
+
+            <button class="danger-btn" onclick="deleteAccount()">🗑️ Delete Account</button>
+>>>>>>> 7b8078189866608ae311f9e5df22f1fecefa6031
         </div>
     </section>
 
@@ -806,6 +886,7 @@
 
 <div id="toast" class="toast"></div>
 
+<<<<<<< HEAD
 <script>
 /* =========================================================
    GAME DATA
@@ -2290,3 +2371,10 @@ initGame();
 
 </body>
 </html>
+=======
+<script src="authorized-songs.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
+>>>>>>> 7b8078189866608ae311f9e5df22f1fecefa6031
