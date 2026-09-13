@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cakes & Candies</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🍰 Cakes & Candies</div>
+
+    <div class="money">
+        💰 $<span id="money">1000</span>
+    </div>
+
+    <button class="settings-btn" onclick="openSettings()">⚙️</button>
+</header>
+
+<nav class="nav">
+    <button id="nav-home" class="active" onclick="showPage('home')">🏠 Home</button>
+    <button id="nav-goods" onclick="showPage('goods')">🛒 Goods Merchant</button>
+    <button id="nav-packs" onclick="showPage('packs')">📦 Pack Merchant</button>
+    <button id="nav-inventory" onclick="showPage('inventory')">🎒 Inventory</button>
+    <button id="nav-pantry" onclick="showPage('pantry')">⭐ Pantry</button>
+    <button id="nav-sell" onclick="showPage('sell')">💵 Sell</button>
+    <button id="nav-stats" onclick="showPage('stats')">📊 Stats</button>
+    <button id="nav-minigames" onclick="showPage('minigames')">🎮 Minigames</button>
+    <button id="nav-account" onclick="showPage('account')">👤 Account</button>
+</nav>
+
+<main>
+
+<section id="home" class="page active">
+    <div class="welcome">
+        <h1>🍰 Welcome to Cakes & Candies!</h1>
+        <p>Buy desserts, discover mutations, collect rare treats and make money.</p>
+    </div>
+
+    <div class="dessert-grid">
+        <div class="dessert-card">
+            <div class="dessert-icon">🍰</div>
+            <div class="dessert-name">Your Goal</div>
+            <div class="value">Build the biggest dessert collection possible.</div>
+        </div>
+
+        <div class="dessert-card">
+            <div class="dessert-icon">✨</div>
+            <div class="dessert-name">Mutations</div>
+            <div class="value">Delicious and Big mutations can make desserts dramatically more valuable.</div>
+        </div>
+
+        <div class="dessert-card">
+            <div class="dessert-icon">⏱️</div>
+            <div class="dessert-name">Stock</div>
+            <div class="value">Merchant stock refreshes every 5 minutes.</div>
+        </div>
+    </div>
+</section>
+
+<section id="goods" class="page">
+    <div class="merchant-info">
+        <div>
+            <h2>🛒 Goods Merchant</h2>
+            <p>Buy one dessert at a time.</p>
+        </div>
+
+        <div class="stock-timer">
+            Stock resets in <span id="goodsTimer">05:00</span>
+        </div>
+    </div>
+
+    <div id="goodsGrid" class="dessert-grid"></div>
+</section>
+
+<section id="packs" class="page">
+    <div class="merchant-info">
+        <div>
+            <h2>📦 Pack Merchant</h2>
+            <p>Buy packs containing multiple desserts.</p>
+        </div>
+
+        <div class="stock-timer">
+            Stock resets in <span id="packsTimer">05:00</span>
+        </div>
+    </div>
+
+    <div id="packsGrid"></div>
+</section>
+
+<section id="inventory" class="page">
+    <h2>🎒 Inventory</h2>
+    <br>
+    <div id="inventoryList"></div>
+</section>
+
+<section id="pantry" class="page">
+    <h2>⭐ Pantry</h2>
+
+    <p class="pantry-slots">
+        Favorite desserts:
+        <span id="pantryCount">0</span>/10
+    </p>
+
+    <div id="pantryList"></div>
+</section>
+
+<section id="sell" class="page">
+    <h2>💵 Sell Desserts</h2>
+
+    <p class="description">
+        Sell your desserts directly to the seller. Pantry desserts are protected.
+    </p>
+
+    <div class="sell-all-row">
+        <button class="sell-all-btn" onclick="sellAll()">
+            💰 Sell All (Except Pantry)
+        </button>
+    </div>
+
+    <div id="sellList"></div>
+</section>
+
+<section id="stats" class="page">
+    <div class="merchant-info">
+        <div>
+            <h2>📊 Lifetime Stats</h2>
+            <p>These stats survive Rebirth.</p>
+        </div>
+
+        <button class="small-btn" onclick="renderStats()">↻ Refresh</button>
+    </div>
+
+    <div id="statsContent"></div>
+
+    <div class="rebirth-card">
+        <div>
+            <h3>🌟 Rebirth</h3>
+            <p>
+                Requires $50,000,000. Resets your current money and inventory,
+                but keeps lifetime progress.
+            </p>
+            <p id="rebirthStatus"></p>
+        </div>
+
+        <button class="rebirth-btn" onclick="rebirth()">
+            REBIRTH — $50M
+        </button>
+    </div>
+</section>
+
+<section id="minigames" class="page">
+    <div class="merchant-info">
+        <div>
+            <h2>🎮 Minigames</h2>
+            <p>Play quick games and earn unopened dessert packs.</p>
+        </div>
+    </div>
+
+    <div id="minigameContent"></div>
+</section>
+
+<section id="account" class="page">
+    <div class="login-box">
+        <h2>👤 Account</h2>
+
+        <p>
+            Sign in is optional. Your local game save still works without an account.
+        </p>
+
+        <div class="oauth-grid">
+            <button class="oauth-btn" onclick="startExternalSignIn('Google')">
+                🔵 Sign in with Google
+            </button>
+
+            <button class="oauth-btn" onclick="startExternalSignIn('Apple')">
+                 Sign in with Apple
+            </button>
+
+            <button class="oauth-btn" onclick="startExternalSignIn('Microsoft')">
+                🪟 Sign in with Microsoft
+            </button>
+        </div>
+
+        <div class="account-divider">
+            <span>OR</span>
+        </div>
+
+        <input id="loginEmail" type="email" placeholder="Email">
+        <input id="loginName" type="text" placeholder="Username">
+
+        <button class="small-btn full-btn" onclick="signIn()">
+            Sign In
+        </button>
+
+        <p id="accountStatus" class="account-status"></p>
+
+        <div class="account-note">
+            <strong>🔐 Real OAuth note:</strong>
+            Google, Apple and Microsoft authentication requires a real authentication backend.
+        </div>
+
+        <button class="danger-btn" onclick="deleteAccount()">
+            🗑️ Delete Account
+        </button>
+    </div>
+</section>
+
+</main>
+
+<div id="settingsOverlay" class="overlay">
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2>⚙️ Settings</h2>
+            <button class="close-btn" onclick="closeSettings()">✕</button>
+        </div>
+
+        <div class="setting-section">
+            <h3>🔑 Codes</h3>
+
+            <div class="setting-row">
+                <input id="codeInput" type="text" placeholder="Enter code">
+                <button class="small-btn" onclick="redeemCode()">Redeem</button>
+            </div>
+        </div>
+
+        <div class="setting-section">
+            <h3>🔊 Volume</h3>
+
+            <div class="setting-row">
+                <label>Music</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="70"
+                    id="musicVolume"
+                    oninput="changeMusicVolume(this.value)"
+                >
+                <span id="musicVolumeText">70%</span>
+            </div>
+
+            <div class="setting-row">
+                <label>Sounds</label>
+                <input type="range" min="0" max="100" value="70" id="soundVolume">
+            </div>
+        </div>
+
+        <div class="setting-section">
+            <h3>🌈 Colorblindness</h3>
+
+            <div class="setting-row">
+                <select id="colorblindMode" onchange="setColorblindMode(this.value)">
+                    <option value="normal">Normal</option>
+                    <option value="protanopia">Protanopia</option>
+                    <option value="deuteranopia">Deuteranopia</option>
+                    <option value="tritanopia">Tritanopia</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="setting-section">
+            <h3>🎨 Light Modes</h3>
+
+            <div class="setting-row">
+                <label>Background</label>
+                <input
+                    type="color"
+                    id="backgroundColor"
+                    value="#fff7ed"
+                    onchange="changeBackground(this.value)"
+                >
+            </div>
+
+            <div class="setting-row">
+                <label>Words</label>
+                <input
+                    type="color"
+                    id="textColor"
+                    value="#2b1b12"
+                    onchange="changeTextColor(this.value)"
+                >
+            </div>
+        </div>
+
+        <div class="setting-section">
+            <h3>🎵 Soundtrack</h3>
+
+            <div class="setting-row">
+                <button class="small-btn" onclick="previousSong()">⏮</button>
+                <button class="small-btn" onclick="toggleMusic()" id="musicToggle">▶ Play</button>
+                <button class="small-btn" onclick="nextSong()">⏭</button>
+                <button class="small-btn" onclick="shuffleSongs()">🔀 Shuffle</button>
+            </div>
+
+            <p class="now-playing">
+                Now Playing:
+                <strong id="currentSong">Classic Easter</strong>
+            </p>
+
+            <div class="song-list" id="songList"></div>
+
+            <h4>🔑 Custom Song ID</h4>
+
+            <div class="setting-row">
+                <input id="songIdInput" type="text" placeholder="Enter song ID">
+                <button class="small-btn" onclick="addCustomSong()">Add</button>
+            </div>
+        </div>
+
+        <div class="setting-section">
+            <h3>💡 Suggestions, Questions & Etc.</h3>
+
+            <p>Sign in to submit suggestions or questions.</p>
+
+            <div class="setting-row">
+                <input
+                    type="text"
+                    id="suggestionInput"
+                    placeholder="Your suggestion..."
+                >
+                <button class="small-btn" onclick="sendSuggestion()">Send</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
