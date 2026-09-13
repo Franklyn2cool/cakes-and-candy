@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cakes & Candies</title>
+
+<style>
+    :root {
+        --bg: #fff7ed;
+        --card: #ffffff;
+        --text: #2b1b12;
+        --accent: #ff8c42;
+        --accent2: #ffca3a;
+        --border: #e6d5c5;
+        --danger: #ef4444;
+        --success: #22c55e;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        transition: 0.25s;
+    }
+
+    button,
+    input,
+    select {
+        font: inherit;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    /* HEADER */
+
+    header {
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        background: var(--card);
+        border-bottom: 2px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .logo {
+        font-size: 28px;
+        font-weight: 900;
+    }
+
+    .money {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .settings-btn {
+        border: none;
+        background: var(--accent);
+        color: white;
+        padding: 11px 15px;
+        border-radius: 12px;
+        font-size: 18px;
+    }
+
+    /* NAV */
+
+    .nav {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 18px;
+    }
+
+    .nav button {
+        border: none;
+        padding: 13px 20px;
+        border-radius: 12px;
+        background: var(--card);
+        color: var(--text);
+        box-shadow: 0 2px 7px rgba(0,0,0,.08);
+        font-weight: bold;
+    }
+
+    .nav button.active {
+        background: var(--accent);
+        color: white;
+    }
+
+    /* MAIN */
+
+    main {
+        max-width: 1200px;
+        margin: auto;
+        padding: 15px;
+    }
+
+    .page {
+        display: none;
+    }
+
+    .page.active {
+        display: block;
+    }
+
+    .welcome {
+        text-align: center;
+        padding: 30px;
+    }
+
+    .welcome h1 {
+        font-size: 42px;
+        margin-bottom: 10px;
+    }
+
+    .welcome p {
+        font-size: 17px;
+        opacity: .8;
+    }
+
+    /* CARDS */
+
+    .merchant-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .stock-timer {
+        font-weight: bold;
+        padding: 10px 14px;
+        background: var(--card);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+    }
+
+    .dessert-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+        gap: 15px;
+    }
+
+    .dessert-card {
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 16px;
+        padding: 17px;
+        transition: .15s;
+    }
+
+    .dessert-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 18px rgba(0,0,0,.08);
+    }
+
+    .dessert-icon {
+        font-size: 48px;
+        margin-bottom: 7px;
+    }
+
+    .dessert-name {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .rarity {
+        font-weight: bold;
+        margin-top: 4px;
+    }
+
+    .common {
+        color: #777;
+    }
+
+    .uncommon {
+        color: #16a34a;
+    }
+
+    .rare {
+        color: #2563eb;
+    }
+
+    .legendary {
+        color: #a855f7;
+    }
+
+    .price {
+        margin-top: 9px;
+        font-weight: bold;
+    }
+
+    .value {
+        margin-top: 5px;
+        font-size: 14px;
+    }
+
+    .stock {
+        margin-top: 5px;
+        font-size: 14px;
+    }
+
+    .buy-row {
+        display: flex;
+        gap: 7px;
+        margin-top: 13px;
+    }
+
+    .buy-btn,
+    .sell-btn,
+    .pack-btn {
+        flex: 1;
+        border: none;
+        padding: 11px;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        font-weight: bold;
+    }
+
+    .buy-btn:disabled,
+    .pack-btn:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+    }
+
+    .sell-btn {
+        background: var(--success);
+    }
+
+    /* INVENTORY */
+
+    .empty {
+        text-align: center;
+        padding: 60px 10px;
+        opacity: .65;
+        font-size: 18px;
+    }
+
+    .inventory-card {
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 15px;
+        padding: 16px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .inventory-left {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+    .inventory-icon {
+        font-size: 35px;
+    }
+
+    .inventory-name {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .mutation {
+        display: inline-block;
+        margin-top: 4px;
+        font-size: 13px;
+        font-weight: bold;
+        padding: 4px 7px;
+        border-radius: 7px;
+        background: #fff0bd;
+    }
+
+    /* PANTRY */
+
+    .pantry-slots {
+        margin-bottom: 18px;
+        font-weight: bold;
+    }
+
+    .favorite-btn {
+        border: none;
+        padding: 9px 12px;
+        border-radius: 9px;
+        background: var(--accent2);
+        color: #351e00;
+        font-weight: bold;
+    }
+
+    /* MODAL */
+
+    .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.45);
+        z-index: 100;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .overlay.show {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .modal {
+        background: var(--card);
+        color: var(--text);
+        width: min(700px, 100%);
+        margin-top: 40px;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 15px 50px rgba(0,0,0,.25);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .close-btn {
+        border: none;
+        background: transparent;
+        font-size: 26px;
+    }
+
+    .setting-section {
+        padding: 17px 0;
+        border-top: 1px solid var(--border);
+    }
+
+    .setting-section h3 {
+        margin-bottom: 10px;
+    }
+
+    .setting-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 9px 0;
+        flex-wrap: wrap;
+    }
+
+    .setting-row input[type="text"],
+    .setting-row input[type="email"],
+    .setting-row select {
+        flex: 1;
+        min-width: 180px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: var(--bg);
+        color: var(--text);
+    }
+
+    .setting-row input[type="color"] {
+        width: 55px;
+        height: 35px;
+        border: none;
+        background: transparent;
+    }
+
+    .small-btn {
+        border: none;
+        border-radius: 9px;
+        padding: 10px 14px;
+        background: var(--accent);
+        color: white;
+        font-weight: bold;
+    }
+
+    .song-list {
+        margin-top: 12px;
+    }
+
+    .song {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 9px;
+        background: var(--bg);
+        margin-bottom: 6px;
+    }
+
+    .song button {
+        margin-left: auto;
+        border: none;
+        border-radius: 7px;
+        padding: 6px 10px;
+        background: var(--accent);
+        color: white;
+    }
+
+    /* TOAST */
+
+    .toast {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        background: #222;
+        color: white;
+        padding: 13px 17px;
+        border-radius: 11px;
+        opacity: 0;
+        pointer-events: none;
+        transition: .25s;
+        z-index: 200;
+    }
+
+    .toast.show {
+        opacity: 1;
+    }
+
+    /* PACK */
+
+    .pack-card {
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 15px;
+    }
+
+    .pack-title {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .pack-description {
+        margin: 8px 0;
+        opacity: .8;
+    }
+
+    .pack-price {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .pack-contents {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    /* SIGN IN */
+
+    .login-box {
+        background: var(--card);
+        border: 2px solid var(--border);
+        padding: 25px;
+        border-radius: 17px;
+        max-width: 500px;
+        margin: 25px auto;
+    }
+
+    .login-box input {
+        width: 100%;
+        margin: 7px 0;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: var(--bg);
+        color: var(--text);
+    }
+
+    @media(max-width:600px) {
+        .logo {
+            font-size: 21px;
+        }
+
+        .money {
+            font-size: 17px;
+        }
+
+        .settings-btn {
+            padding: 9px;
+        }
+
+        .welcome h1 {
+            font-size: 31px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🍰 Cakes & Candies</div>
+
+    <div class="money">
+        💰 $<span id="money">1000</span>
+    </div>
+
+    <button class="settings-btn" onclick="openSettings()">⚙️</button>
+</header>
+
+<div class="nav">
+    <button id="nav-home" class="active" onclick="showPage('home')">🏠 Home</button>
+    <button id="nav-goods" onclick="showPage('goods')">🛒 Goods Merchant</button>
+    <button id="nav-packs" onclick="showPage('packs')">📦 Pack Merchant</button>
+    <button id="nav-inventory" onclick="showPage('inventory')">🎒 Inventory</button>
+    <button id="nav-pantry" onclick="showPage('pantry')">⭐ Pantry</button>
+    <button id="nav-sell" onclick="showPage('sell')">💵 Sell</button>
+    <button id="nav-account" onclick="showPage('account')">👤 Account</button>
+</div>
+
+<main>
+
+    <!-- HOME -->
+
+    <section id="home" class="page active">
+        <div class="welcome">
+            <h1>🍰 Welcome to Cakes & Candies!</h1>
+            <p>Buy desserts, discover mutations, collect rare treats and make money.</p>
+        </div>
+
+        <div class="dessert-grid">
+            <div class="dessert-card">
+                <div class="dessert-icon">🍰</div>
+                <div class="dessert-name">Your Goal</div>
+                <div class="value">Build the biggest dessert collection possible.</div>
+            </div>
+
+            <div class="dessert-card">
+                <div class="dessert-icon">✨</div>
+                <div class="dessert-name">Mutations</div>
+                <div class="value">Delicious and Big mutations can make desserts dramatically more valuable.</div>
+            </div>
+
+            <div class="dessert-card">
+                <div class="dessert-icon">⏱️</div>
+                <div class="dessert-name">Stock</div>
+                <div class="value">Merchant stock refreshes every 5 minutes.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GOODS MERCHANT -->
+
+    <section id="goods" class="page">
+        <div class="merchant-info">
+            <div>
+                <h2>🛒 Goods Merchant</h2>
+                <p>Buy one dessert at a time.</p>
+            </div>
+
+            <div class="stock-timer">
+                Stock resets in <span id="goodsTimer">05:00</span>
+            </div>
+        </div>
+
+        <div id="goodsGrid" class="dessert-grid"></div>
+    </section>
+
+    <!-- PACK MERCHANT -->
+
+    <section id="packs" class="page">
+        <div class="merchant-info">
+            <div>
+                <h2>📦 Pack Merchant</h2>
+                <p>Buy packs containing multiple desserts.</p>
+            </div>
+
+            <div class="stock-timer">
+                Stock resets in <span id="packsTimer">05:00</span>
+            </div>
+        </div>
+
+        <div id="packsGrid"></div>
+    </section>
+
+    <!-- INVENTORY -->
+
+    <section id="inventory" class="page">
+        <h2>🎒 Inventory</h2>
+        <br>
+        <div id="inventoryList"></div>
+    </section>
+
+    <!-- PANTRY -->
+
+    <section id="pantry" class="page">
+        <h2>⭐ Pantry</h2>
+        <p class="pantry-slots">
+            Favorite desserts: <span id="pantryCount">0</span>/10
+        </p>
+
+        <div id="pantryList"></div>
+    </section>
+
+    <!-- SELL -->
+
+    <section id="sell" class="page">
+        <h2>💵 Sell Desserts</h2>
+        <p style="margin:8px 0 18px;">
+            Sell your desserts directly to the seller.
+        </p>
+
+        <div id="sellList"></div>
+    </section>
+
+    <!-- ACCOUNT -->
+
+    <section id="account" class="page">
+        <div class="login-box">
+            <h2>👤 Account</h2>
+            <br>
+
+            <p>
+                Signing in is optional. You can play without an account.
+            </p>
+
+            <br>
+
+            <input id="loginEmail" type="email" placeholder="Email">
+            <input id="loginName" type="text" placeholder="Username">
+
+            <button class="small-btn" onclick="signIn()">
+                Sign In
+            </button>
+
+            <p id="accountStatus" style="margin-top:15px;"></p>
+        </div>
+    </section>
+
+</main>
+
+<!-- SETTINGS -->
+
+<div id="settingsOverlay" class="overlay">
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2>⚙️ Settings</h2>
+            <button class="close-btn" onclick="closeSettings()">✕</button>
+        </div>
+
+        <!-- CODES -->
+
+        <div class="setting-section">
+            <h3>🔑 Codes</h3>
+
+            <div class="setting-row">
+                <input type="text" id="codeInput" placeholder="Enter code">
+                <button class="small-btn" onclick="redeemCode()">Redeem</button>
+            </div>
+        </div>
+
+        <!-- VOLUME -->
+
+        <div class="setting-section">
+            <h3>🔊 Volume</h3>
+
+            <div class="setting-row">
+                <label>Music</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="70"
+                    id="musicVolume"
+                    oninput="changeMusicVolume(this.value)"
+                >
+                <span id="musicVolumeText">70%</span>
+            </div>
+
+            <div class="setting-row">
+                <label>Sounds</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="70"
+                    id="soundVolume"
+                >
+            </div>
+        </div>
+
+        <!-- COLORBLIND -->
+
+        <div class="setting-section">
+            <h3>🌈 Colorblindness</h3>
+
+            <div class="setting-row">
+                <select id="colorblindMode" onchange="setColorblindMode(this.value)">
+                    <option value="normal">Normal</option>
+                    <option value="protanopia">Protanopia</option>
+                    <option value="deuteranopia">Deuteranopia</option>
+                    <option value="tritanopia">Tritanopia</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- LIGHT MODE -->
+
+        <div class="setting-section">
+            <h3>🎨 Light Modes</h3>
+
+            <div class="setting-row">
+                <label>Background</label>
+                <input
+                    type="color"
+                    id="backgroundColor"
+                    value="#fff7ed"
+                    onchange="changeBackground(this.value)"
+                >
+            </div>
+
+            <div class="setting-row">
+                <label>Words</label>
+                <input
+                    type="color"
+                    id="textColor"
+                    value="#2b1b12"
+                    onchange="changeTextColor(this.value)"
+                >
+            </div>
+        </div>
+
+        <!-- SOUNDTRACK -->
+
+        <div class="setting-section">
+            <h3>🎵 Soundtrack</h3>
+
+            <div class="setting-row">
+                <button class="small-btn" onclick="previousSong()">⏮</button>
+                <button class="small-btn" onclick="toggleMusic()" id="musicToggle">
+                    ▶ Play
+                </button>
+                <button class="small-btn" onclick="nextSong()">⏭</button>
+                <button class="small-btn" onclick="shuffleSongs()">🔀 Shuffle</button>
+            </div>
+
+            <p style="margin-top:10px;">
+                Now Playing:
+                <strong id="currentSong">Classic Easter</strong>
+            </p>
+
+            <div class="song-list" id="songList"></div>
+
+            <br>
+
+            <h4>🔑 Authorized Custom Song ID</h4>
+
+            <div class="setting-row">
+                <input
+                    type="text"
+                    id="songIdInput"
+                    placeholder="Enter song ID"
+                >
+                <button class="small-btn" onclick="addCustomSong()">
+                    Add
+                </button>
+            </div>
+        </div>
+
+        <!-- SUGGESTIONS -->
+
+        <div class="setting-section">
+            <h3>💡 Suggestions, Questions & Etc.</h3>
+
+            <p style="margin-bottom:10px;">
+                Sign in to submit suggestions or questions.
+            </p>
+
+            <div class="setting-row">
+                <input
+                    type="text"
+                    id="suggestionInput"
+                    placeholder="Your suggestion..."
+                >
+
+                <button class="small-btn" onclick="sendSuggestion()">
+                    Send
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* =========================================================
+   GAME DATA
+========================================================= */
+
+const desserts = [
+    {
+        id: "carrot",
+        name: "Carrot Cake",
+        icon: "🥕",
+        rarity: "Common",
+        price: 20,
+        minValue: 10,
+        maxValue: 36,
+        packMin: 2,
+        packMax: 6,
+        packPrice: 100,
+        minStock: 5,
+        maxStock: 30
+    },
+
+    {
+        id: "pumpkin",
+        name: "Pumpkin Pie",
+        icon: "🥧",
+        rarity: "Common",
+        price: 150,
+        minValue: 25,
+        maxValue: 300,
+        packMin: 2,
+        packMax: 6,
+        packPrice: 200,
+        minStock: 1,
+        maxStock: 7
+    },
+
+    {
+        id: "apple",
+        name: "Apple Pie",
+        icon: "🥧",
+        rarity: "Common",
+        price: 500,
+        minValue: 270,
+        maxValue: 1500,
+        packMin: 2,
+        packMax: 7,
+        packPrice: 800,
+        minStock: 1,
+        maxStock: 8
+    },
+
+    {
+        id: "lollipop",
+        name: "Lolipop",
+        icon: "🍭",
+        rarity: "Common",
+        price: 700,
+        minValue: 400,
+        maxValue: 5000,
+        packMin: 1,
+        packMax: 30,
+        packPrice: 2000,
+        minStock: 10,
+        maxStock: 30
+    },
+
+    {
+        id: "mochi",
+        name: "Mochi",
+        icon: "🍡",
+        rarity: "Uncommon",
+        price: 1000,
+        minValue: 500,
+        maxValue: 3000,
+        packMin: 2,
+        packMax: 10,
+        packPrice: 4000,
+        minStock: 3,
+        maxStock: 12
+    },
+
+    {
+        id: "dubai",
+        name: "Dubai Chocolate",
+        icon: "🍫",
+        rarity: "Uncommon",
+        price: 5000,
+        minValue: 2500,
+        maxValue: 7000,
+        packMin: 2,
+        packMax: 5,
+        packPrice: 10000,
+        minStock: 2,
+        maxStock: 5
+    },
+
+    {
+        id: "cheesecake",
+        name: "Cheesecake",
+        icon: "🍰",
+        rarity: "Uncommon",
+        price: 7000,
+        minValue: 5000,
+        maxValue: 11000,
+        packMin: 2,
+        packMax: 7,
+        packPrice: 15000,
+        minStock: 1,
+        maxStock: 6
+    },
+
+    {
+        id: "macaroons",
+        name: "Macaroons",
+        icon: "🍪",
+        rarity: "Rare",
+        price: 15000,
+        minValue: 17000,
+        maxValue: 72000,
+        packMin: 5,
+        packMax: 30,
+        packPrice: 100000,
+        minStock: 1,
+        maxStock: 3
+    },
+
+    {
+        id: "flan",
+        name: "Chocolate Flan",
+        icon: "🍮",
+        rarity: "Rare",
+        price: 50000,
+        minValue: 29000,
+        maxValue: 80000,
+        packMin: 2,
+        packMax: 8,
+        packPrice: 100000,
+        minStock: 2,
+        maxStock: 6
+    },
+
+    {
+        id: "gypsy",
+        name: "Gypsy Arm",
+        icon: "🍰",
+        rarity: "Rare",
+        price: 100000,
+        minValue: 55000,
+        maxValue: 200000,
+        packMin: 2,
+        packMax: 20,
+        packPrice: 210000,
+        minStock: 4,
+        maxStock: 10
+    },
+
+    {
+        id: "beignets",
+        name: "Beignets",
+        icon: "🍩",
+        rarity: "Legendary",
+        price: 300000,
+        minValue: 10000,
+        maxValue: 50000,
+        packMin: 20,
+        packMax: 50,
+        packPrice: 310000,
+        minStock: 5,
+        maxStock: 20
+    },
+
+    {
+        id: "icecream",
+        name: "Cookies & Cream Ice Cream",
+        icon: "🍨",
+        rarity: "Legendary",
+        price: 400000,
+        minValue: 100000,
+        maxValue: 1000000,
+        packMin: 2,
+        packMax: 20,
+        packPrice: 600000,
+        minStock: 2,
+        maxStock: 6
+    },
+
+    {
+        id: "churros",
+        name: "Churros",
+        icon: "🥨",
+        rarity: "Legendary",
+        price: 1000000,
+        minValue: 500000,
+        maxValue: 3000000,
+        packMin: 2,
+        packMax: 7,
+        packPrice: 2000000,
+        minStock: 2,
+        maxStock: 20
+    }
+];
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let money = 1000;
+
+let inventory = [];
+
+let pantry = [];
+
+let goodsStock = {};
+
+let packStock = {};
+
+let signedIn = false;
+
+let username = "";
+
+let redeemedCodes = [];
+
+/* =========================================================
+   SOUNDTRACK
+========================================================= */
+
+const songs = [
+    {
+        name: "Classic Easter",
+        artist: "AXS Music"
+    },
+    {
+        name: "Gymnopédie No. 1",
+        artist: "Erik Satie"
+    },
+    {
+        name: "Wedding Cocktail",
+        artist: "AXS Music"
+    },
+    {
+        name: "Do I Clench My Fists?",
+        artist: "Ridgeclub"
+    },
+    {
+        name: "Tropical Breeze",
+        artist: "The Puahia Street Players"
+    },
+    {
+        name: "Beginning Of The Dream",
+        artist: "AZALI"
+    },
+    {
+        name: "Orchestral Practice",
+        artist: "AZALI"
+    },
+    {
+        name: "Rematch",
+        artist: "AZALI"
+    },
+    {
+        name: "Gold",
+        artist: "Koven"
+    }
+];
+
+let currentSongIndex = 0;
+let musicPlaying = false;
+let audio = null;
+
+/*
+    Music files are not embedded here.
+    Put legally licensed/owned audio files in your project
+    and add their paths to the "audio" property.
+*/
+
+const audioSources = {
+    "Classic Easter": "",
+    "Gymnopédie No. 1": "",
+    "Wedding Cocktail": "",
+    "Do I Clench My Fists?": "",
+    "Tropical Breeze": "",
+    "Beginning Of The Dream": "",
+    "Orchestral Practice": "",
+    "Rematch": "",
+    "Gold": ""
+};
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomFloat(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function formatMoney(value) {
+    return Math.floor(value).toLocaleString();
+}
+
+function getDessert(id) {
+    return desserts.find(d => d.id === id);
+}
+
+function getValue(item) {
+    return Math.floor(item.value * item.multiplier);
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2500);
+}
+
+/* =========================================================
+   MUTATIONS
+========================================================= */
+
+function createDessert(id) {
+
+    const dessert = getDessert(id);
+
+    let value = randomFloat(
+        dessert.minValue,
+        dessert.maxValue
+    );
+
+    let mutation = "Normal";
+    let multiplier = 1;
+
+    /*
+        Delicious: 0.002%
+        Big: 1%
+
+        Delicious is checked first.
+    */
+
+    const deliciousRoll = Math.random();
+
+    if (deliciousRoll < 0.00002) {
+        mutation = "Delicious";
+        multiplier = 150;
+    } else {
+        const bigRoll = Math.random();
+
+        if (bigRoll < 0.01) {
+            mutation = "Big";
+            multiplier = 10;
+        }
+    }
+
+    return {
+        uid: Date.now() + Math.random(),
+        id: id,
+        value: value,
+        mutation: mutation,
+        multiplier: multiplier
+    };
+}
+
+/* =========================================================
+   STOCK
+========================================================= */
+
+function resetGoodsStock() {
+
+    goodsStock = {};
+
+    desserts.forEach(dessert => {
+        goodsStock[dessert.id] = randomInt(
+            dessert.minStock,
+            dessert.maxStock
+        );
+    });
+
+    renderGoods();
+}
+
+function resetPackStock() {
+
+    packStock = {};
+
+    desserts.forEach(dessert => {
+        packStock[dessert.id] = true;
+    });
+
+    renderPacks();
+}
+
+/* =========================================================
+   BUY SINGLE
+========================================================= */
+
+function buyDessert(id) {
+
+    const dessert = getDessert(id);
+
+    if (goodsStock[id] <= 0) {
+        showToast("That dessert is out of stock!");
+        return;
+    }
+
+    if (money < dessert.price) {
+        showToast("You don't have enough money!");
+        return;
+    }
+
+    money -= dessert.price;
+
+    goodsStock[id]--;
+
+    inventory.push(createDessert(id));
+
+    updateMoney();
+
+    renderGoods();
+    renderInventory();
+    renderSell();
+
+    showToast(`Bought 1 ${dessert.name}!`);
+}
+
+/* =========================================================
+   BUY PACK
+========================================================= */
+
+function buyPack(id) {
+
+    const dessert = getDessert(id);
+
+    if (!packStock[id]) {
+        showToast("This pack is out of stock!");
+        return;
+    }
+
+    if (money < dessert.packPrice) {
+        showToast("You don't have enough money!");
+        return;
+    }
+
+    money -= dessert.packPrice;
+
+    const amount = randomInt(
+        dessert.packMin,
+        dessert.packMax
+    );
+
+    for (let i = 0; i < amount; i++) {
+        inventory.push(createDessert(id));
+    }
+
+    packStock[id] = false;
+
+    updateMoney();
+
+    renderPacks();
+    renderInventory();
+    renderSell();
+
+    showToast(
+        `Pack opened! You received ${amount} ${dessert.name}${amount === 1 ? "" : "s"}!`
+    );
+}
+
+/* =========================================================
+   SELL
+========================================================= */
+
+function sellItem(uid) {
+
+    const index = inventory.findIndex(
+        item => item.uid === uid
+    );
+
+    if (index === -1) return;
+
+    const item = inventory[index];
+
+    const dessert = getDessert(item.id);
+
+    const sellValue = getValue(item);
+
+    money += sellValue;
+
+    inventory.splice(index, 1);
+
+    pantry = pantry.filter(
+        itemUid => itemUid !== uid
+    );
+
+    updateMoney();
+
+    renderInventory();
+    renderSell();
+    renderPantry();
+
+    showToast(
+        `Sold ${dessert.name} for $${formatMoney(sellValue)}!`
+    );
+}
+
+/* =========================================================
+   PANTRY
+========================================================= */
+
+function togglePantry(uid) {
+
+    const index = pantry.indexOf(uid);
+
+    if (index >= 0) {
+        pantry.splice(index, 1);
+    } else {
+
+        if (pantry.length >= 10) {
+            showToast("Your Pantry is full! Maximum: 10");
+            return;
+        }
+
+        pantry.push(uid);
+    }
+
+    renderInventory();
+    renderPantry();
+}
+
+/* =========================================================
+   RENDER GOODS
+========================================================= */
+
+function renderGoods() {
+
+    const grid = document.getElementById("goodsGrid");
+
+    grid.innerHTML = "";
+
+    desserts.forEach(dessert => {
+
+        const stock = goodsStock[dessert.id] || 0;
+
+        const rarityClass =
+            dessert.rarity.toLowerCase();
+
+        const card = document.createElement("div");
+
+        card.className = "dessert-card";
+
+        card.innerHTML = `
+            <div class="dessert-icon">${dessert.icon}</div>
+
+            <div class="dessert-name">
+                ${dessert.name}
+            </div>
+
+            <div class="rarity ${rarityClass}">
+                ${dessert.rarity}
+            </div>
+
+            <div class="price">
+                Buy: $${formatMoney(dessert.price)}
+            </div>
+
+            <div class="value">
+                Value: $${formatMoney(dessert.minValue)}
+                - $${formatMoney(dessert.maxValue)}
+            </div>
+
+            <div class="stock">
+                Stock: ${stock}
+            </div>
+
+            <div class="buy-row">
+                <button
+                    class="buy-btn"
+                    ${stock <= 0 ? "disabled" : ""}
+                    onclick="buyDessert('${dessert.id}')"
+                >
+                    Buy 1
+                </button>
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+/* =========================================================
+   RENDER PACKS
+========================================================= */
+
+function renderPacks() {
+
+    const container = document.getElementById("packsGrid");
+
+    container.innerHTML = "";
+
+    desserts.forEach(dessert => {
+
+        const available = packStock[dessert.id] !== false;
+
+        const rarityClass =
+            dessert.rarity.toLowerCase();
+
+        const card = document.createElement("div");
+
+        card.className = "pack-card";
+
+        card.innerHTML = `
+            <div class="pack-title">
+                ${dessert.icon} ${dessert.name} Pack
+            </div>
+
+            <div class="rarity ${rarityClass}">
+                ${dessert.rarity}
+            </div>
+
+            <div class="pack-description">
+                Receive between
+                <strong>${dessert.packMin}</strong>
+                and
+                <strong>${dessert.packMax}</strong>
+                ${dessert.name}s.
+            </div>
+
+            <div class="pack-contents">
+                Possible amount:
+                ${dessert.packMin}-${dessert.packMax}
+            </div>
+
+            <div class="pack-price">
+                Pack Price:
+                $${formatMoney(dessert.packPrice)}
+            </div>
+
+            <button
+                class="pack-btn"
+                ${available ? "" : "disabled"}
+                onclick="buyPack('${dessert.id}')"
+            >
+                ${available ? "Buy Pack" : "Sold Out"}
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+/* =========================================================
+   RENDER INVENTORY
+========================================================= */
+
+function renderInventory() {
+
+    const container =
+        document.getElementById("inventoryList");
+
+    container.innerHTML = "";
+
+    if (inventory.length === 0) {
+        container.innerHTML =
+            `<div class="empty">Your inventory is empty.</div>`;
+
+        return;
+    }
+
+    inventory.forEach(item => {
+
+        const dessert = getDessert(item.id);
+
+        const favorite =
+            pantry.includes(item.uid);
+
+        const card =
+            document.createElement("div");
+
+        card.className = "inventory-card";
+
+        card.innerHTML = `
+            <div class="inventory-left">
+
+                <div class="inventory-icon">
+                    ${dessert.icon}
+                </div>
+
+                <div>
+                    <div class="inventory-name">
+                        ${dessert.name}
+                    </div>
+
+                    <div>
+                        Value:
+                        $${formatMoney(getValue(item))}
+                    </div>
+
+                    <span class="mutation">
+                        ${item.mutation}
+                        ×${item.multiplier}
+                    </span>
+                </div>
+
+            </div>
+
+            <div>
+                <button
+                    class="favorite-btn"
+                    onclick="togglePantry(${item.uid})"
+                >
+                    ${favorite ? "⭐ Remove" : "☆ Pantry"}
+                </button>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+/* =========================================================
+   RENDER PANTRY
+========================================================= */
+
+function renderPantry() {
+
+    const container =
+        document.getElementById("pantryList");
+
+    document.getElementById("pantryCount")
+        .textContent = pantry.length;
+
+    container.innerHTML = "";
+
+    const items =
+        inventory.filter(item =>
+            pantry.includes(item.uid)
+        );
+
+    if (items.length === 0) {
+        container.innerHTML =
+            `<div class="empty">Your Pantry is empty.</div>`;
+
+        return;
+    }
+
+    items.forEach(item => {
+
+        const dessert = getDessert(item.id);
+
+        const card =
+            document.createElement("div");
+
+        card.className = "inventory-card";
+
+        card.innerHTML = `
+            <div class="inventory-left">
+
+                <div class="inventory-icon">
+                    ${dessert.icon}
+                </div>
+
+                <div>
+                    <div class="inventory-name">
+                        ${dessert.name}
+                    </div>
+
+                    <div>
+                        ${item.mutation}
+                        — $${formatMoney(getValue(item))}
+                    </div>
+                </div>
+
+            </div>
+
+            <button
+                class="favorite-btn"
+                onclick="togglePantry(${item.uid})"
+            >
+                Remove
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+/* =========================================================
+   RENDER SELL
+========================================================= */
+
+function renderSell() {
+
+    const container =
+        document.getElementById("sellList");
+
+    container.innerHTML = "";
+
+    if (inventory.length === 0) {
+
+        container.innerHTML =
+            `<div class="empty">Nothing to sell.</div>`;
+
+        return;
+    }
+
+    inventory.forEach(item => {
+
+        const dessert = getDessert(item.id);
+
+        const card =
+            document.createElement("div");
+
+        card.className = "inventory-card";
+
+        card.innerHTML = `
+            <div class="inventory-left">
+
+                <div class="inventory-icon">
+                    ${dessert.icon}
+                </div>
+
+                <div>
+                    <div class="inventory-name">
+                        ${dessert.name}
+                    </div>
+
+                    <div>
+                        ${item.mutation}
+                    </div>
+
+                    <div>
+                        Sell for:
+                        <strong>
+                            $${formatMoney(getValue(item))}
+                        </strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <button
+                class="sell-btn"
+                onclick="sellItem(${item.uid})"
+            >
+                Sell
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+/* =========================================================
+   MONEY
+========================================================= */
+
+function updateMoney() {
+    document.getElementById("money")
+        .textContent = formatMoney(money);
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(page) {
+
+    document
+        .querySelectorAll(".page")
+        .forEach(p => p.classList.remove("active"));
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(b => b.classList.remove("active"));
+
+    document
+        .getElementById(page)
+        .classList.add("active");
+
+    const navButton =
+        document.getElementById("nav-" + page);
+
+    if (navButton) {
+        navButton.classList.add("active");
+    }
+
+    if (page === "inventory") {
+        renderInventory();
+    }
+
+    if (page === "pantry") {
+        renderPantry();
+    }
+
+    if (page === "sell") {
+        renderSell();
+    }
+}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function openSettings() {
+
+    document
+        .getElementById("settingsOverlay")
+        .classList.add("show");
+}
+
+function closeSettings() {
+
+    document
+        .getElementById("settingsOverlay")
+        .classList.remove("show");
+}
+
+/* =========================================================
+   CODE SYSTEM
+========================================================= */
+
+function redeemCode() {
+
+    const input =
+        document.getElementById("codeInput");
+
+    const code =
+        input.value.trim().toUpperCase();
+
+    if (code === "NEWGAMEWHATDIS") {
+
+        if (redeemedCodes.includes(code)) {
+            showToast("You already redeemed this code!");
+            return;
+        }
+
+        for (let i = 0; i < 5; i++) {
+            inventory.push(
+                createDessert("lollipop")
+            );
+        }
+
+        redeemedCodes.push(code);
+
+        renderInventory();
+        renderSell();
+
+        showToast("🎉 You received 5 Lolipops!");
+    } else {
+
+        showToast("Invalid code.");
+    }
+
+    input.value = "";
+}
+
+/* =========================================================
+   VOLUME
+========================================================= */
+
+function changeMusicVolume(value) {
+
+    document.getElementById("musicVolumeText")
+        .textContent = value + "%";
+
+    if (audio) {
+        audio.volume =
+            Number(value) / 100;
+    }
+}
+
+/* =========================================================
+   COLORBLIND
+========================================================= */
+
+function setColorblindMode(mode) {
+
+    const root =
+        document.documentElement;
+
+    if (mode === "normal") {
+
+        root.style.setProperty("--bg", "#fff7ed");
+        root.style.setProperty("--text", "#2b1b12");
+        root.style.setProperty("--accent", "#ff8c42");
+
+    } else if (mode === "protanopia") {
+
+        root.style.setProperty("--bg", "#fff9e6");
+        root.style.setProperty("--text", "#2a2417");
+        root.style.setProperty("--accent", "#0066cc");
+
+    } else if (mode === "deuteranopia") {
+
+        root.style.setProperty("--bg", "#f5f8e8");
+        root.style.setProperty("--text", "#1f2716");
+        root.style.setProperty("--accent", "#0057b8");
+
+    } else if (mode === "tritanopia") {
+
+        root.style.setProperty("--bg", "#f8f0ff");
+        root.style.setProperty("--text", "#21162c");
+        root.style.setProperty("--accent", "#d10070");
+    }
+}
+
+/* =========================================================
+   COLORS
+========================================================= */
+
+function changeBackground(color) {
+
+    document.documentElement
+        .style.setProperty("--bg", color);
+}
+
+function changeTextColor(color) {
+
+    document.documentElement
+        .style.setProperty("--text", color);
+}
+
+/* =========================================================
+   SOUNDTRACK UI
+========================================================= */
+
+function renderSongs() {
+
+    const list =
+        document.getElementById("songList");
+
+    list.innerHTML = "";
+
+    songs.forEach((song, index) => {
+
+        const row =
+            document.createElement("div");
+
+        row.className = "song";
+
+        row.innerHTML = `
+            <span>
+                🎵 ${song.name}
+                —
+                ${song.artist}
+            </span>
+
+            <button onclick="selectSong(${index})">
+                Play
+            </button>
+        `;
+
+        list.appendChild(row);
+    });
+}
+
+function selectSong(index) {
+
+    currentSongIndex = index;
+
+    document.getElementById("currentSong")
+        .textContent =
+        songs[index].name;
+
+    if (musicPlaying) {
+        playCurrentSong();
+    }
+}
+
+function toggleMusic() {
+
+    musicPlaying = !musicPlaying;
+
+    const button =
+        document.getElementById("musicToggle");
+
+    if (musicPlaying) {
+
+        button.textContent = "⏸ Pause";
+
+        playCurrentSong();
+
+    } else {
+
+        button.textContent = "▶ Play";
+
+        if (audio) {
+            audio.pause();
+        }
+    }
+}
+
+function playCurrentSong() {
+
+    const song =
+        songs[currentSongIndex];
+
+    const source =
+        audioSources[song.name];
+
+    document.getElementById("currentSong")
+        .textContent = song.name;
+
+    if (!source) {
+
+        /*
+            Audio source has not been added yet.
+            The game still tracks the currently selected song.
+        */
+
+        showToast(
+            `${song.name} selected. Add its authorized audio file to play it.`
+        );
+
+        return;
+    }
+
+    if (audio) {
+        audio.pause();
+    }
+
+    audio = new Audio(source);
+
+    audio.volume =
+        Number(
+            document.getElementById("musicVolume").value
+        ) / 100;
+
+    audio.play();
+
+    audio.onended = () => {
+        nextSong();
+    };
+}
+
+function nextSong() {
+
+    currentSongIndex++;
+
+    if (currentSongIndex >= songs.length) {
+        currentSongIndex = 0;
+    }
+
+    document.getElementById("currentSong")
+        .textContent =
+        songs[currentSongIndex].name;
+
+    if (musicPlaying) {
+        playCurrentSong();
+    }
+}
+
+function previousSong() {
+
+    currentSongIndex--;
+
+    if (currentSongIndex < 0) {
+        currentSongIndex = songs.length - 1;
+    }
+
+    document.getElementById("currentSong")
+        .textContent =
+        songs[currentSongIndex].name;
+
+    if (musicPlaying) {
+        playCurrentSong();
+    }
+}
+
+function shuffleSongs() {
+
+    currentSongIndex =
+        randomInt(0, songs.length - 1);
+
+    document.getElementById("currentSong")
+        .textContent =
+        songs[currentSongIndex].name;
+
+    if (musicPlaying) {
+        playCurrentSong();
+    }
+}
+
+function addCustomSong() {
+
+    if (!signedIn) {
+        showToast("You must sign in to add a custom song.");
+        return;
+    }
+
+    const input =
+        document.getElementById("songIdInput");
+
+    const id =
+        input.value.trim();
+
+    if (!id) {
+        showToast("Enter a song ID.");
+        return;
+    }
+
+    /*
+        This stores the ID locally for now.
+        A real hosted version would validate the ID
+        on a backend before loading audio.
+    */
+
+    songs.push({
+        name: "Custom Song " + id,
+        artist: "Custom",
+        id: id
+    });
+
+    renderSongs();
+
+    input.value = "";
+
+    showToast("Custom song added!");
+}
+
+/* =========================================================
+   ACCOUNT
+========================================================= */
+
+function signIn() {
+
+    const email =
+        document.getElementById("loginEmail").value.trim();
+
+    const name =
+        document.getElementById("loginName").value.trim();
+
+    if (!email || !name) {
+        showToast("Enter your username and email.");
+        return;
+    }
+
+    signedIn = true;
+
+    username = name;
+
+    document.getElementById("accountStatus")
+        .textContent =
+        `✅ Signed in as ${username}`;
+
+    showToast("Signed in!");
+}
+
+/* =========================================================
+   SUGGESTIONS
+========================================================= */
+
+function sendSuggestion() {
+
+    if (!signedIn) {
+        showToast("You must sign in first.");
+        return;
+    }
+
+    const message =
+        document.getElementById("suggestionInput")
+            .value.trim();
+
+    if (!message) {
+        showToast("Write something first.");
+        return;
+    }
+
+    /*
+        Front-end only implementation.
+
+        This creates an email draft.
+        A real automatic email system should use
+        a backend/email service instead.
+    */
+
+    const subject =
+        encodeURIComponent("Cakes & Candies Suggestion");
+
+    const body =
+        encodeURIComponent(
+            `From: ${username}\n\n${message}`
+        );
+
+    window.location.href =
+        `mailto:franklyndavid770@gmail.com?subject=${subject}&body=${body}`;
+
+    document.getElementById("suggestionInput")
+        .value = "";
+}
+
+/* =========================================================
+   STOCK TIMER
+========================================================= */
+
+function getNextFiveMinuteTimestamp() {
+
+    const now = new Date();
+
+    const next =
+        new Date(now);
+
+    next.setSeconds(0);
+    next.setMilliseconds(0);
+
+    const minutes =
+        next.getMinutes();
+
+    const nextMultiple =
+        Math.ceil((minutes + 0.0001) / 5) * 5;
+
+    next.setMinutes(nextMultiple);
+
+    if (
+        next.getTime() <= now.getTime()
+    ) {
+        next.setMinutes(
+            next.getMinutes() + 5
+        );
+    }
+
+    return next;
+}
+
+let nextStockReset =
+    getNextFiveMinuteTimestamp();
+
+function updateStockTimer() {
+
+    const now =
+        new Date();
+
+    let difference =
+        nextStockReset.getTime()
+        - now.getTime();
+
+    if (difference <= 0) {
+
+        resetGoodsStock();
+        resetPackStock();
+
+        nextStockReset =
+            getNextFiveMinuteTimestamp();
+
+        difference =
+            nextStockReset.getTime()
+            - now.getTime();
+    }
+
+    const totalSeconds =
+        Math.max(
+            0,
+            Math.floor(difference / 1000)
+        );
+
+    const minutes =
+        Math.floor(totalSeconds / 60);
+
+    const seconds =
+        totalSeconds % 60;
+
+    const formatted =
+        String(minutes).padStart(2, "0")
+        + ":"
+        + String(seconds).padStart(2, "0");
+
+    document.getElementById("goodsTimer")
+        .textContent = formatted;
+
+    document.getElementById("packsTimer")
+        .textContent = formatted;
+}
+
+/* =========================================================
+   LOCAL SAVE
+========================================================= */
+
+function saveGame() {
+
+    const saveData = {
+        money,
+        inventory,
+        pantry,
+        signedIn,
+        username,
+        redeemedCodes
+    };
+
+    localStorage.setItem(
+        "cakesAndCandiesSave",
+        JSON.stringify(saveData)
+    );
+}
+
+function loadGame() {
+
+    const saved =
+        localStorage.getItem(
+            "cakesAndCandiesSave"
+        );
+
+    if (!saved) return;
+
+    try {
+
+        const data =
+            JSON.parse(saved);
+
+        money =
+            data.money ?? 1000;
+
+        inventory =
+            data.inventory ?? [];
+
+        pantry =
+            data.pantry ?? [];
+
+        signedIn =
+            data.signedIn ?? false;
+
+        username =
+            data.username ?? "";
+
+        redeemedCodes =
+            data.redeemedCodes ?? [];
+
+        if (signedIn) {
+            document.getElementById("accountStatus")
+                .textContent =
+                `✅ Signed in as ${username}`;
+        }
+
+    } catch (error) {
+        console.log("Save could not be loaded.");
+    }
+}
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+function initGame() {
+
+    loadGame();
+
+    resetGoodsStock();
+    resetPackStock();
+
+    renderInventory();
+    renderPantry();
+    renderSell();
+    renderSongs();
+
+    updateMoney();
+
+    updateStockTimer();
+}
+
+/* =========================================================
+   AUTO SAVE
+========================================================= */
+
+setInterval(() => {
+    saveGame();
+}, 5000);
+
+setInterval(() => {
+    updateStockTimer();
+}, 1000);
+
+/* =========================================================
+   START
+========================================================= */
+
+initGame();
+
+</script>
+
+</body>
+</html>
