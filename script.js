@@ -1,10 +1,5 @@
 /* =========================================================
-   CAKES & CANDIES
-   MAIN GAME JAVASCRIPT
-========================================================= */
-
-/* =========================================================
-   DESSERT DATA
+   GAME DATA
 ========================================================= */
 
 const desserts = [
@@ -201,9 +196,53 @@ const desserts = [
         packPrice: 2000000,
         minStock: 2,
         maxStock: 20
+    },
+
+    {
+        id: "crepes",
+        name: "Crepes",
+        icon: "🥞",
+        rarity: "Mythic",
+        price: 5000000,
+        minValue: 2500000,
+        maxValue: 10000000,
+        packMin: 2,
+        packMax: 10,
+        packPrice: 10000000,
+        minStock: 2,
+        maxStock: 20
+    },
+
+    {
+        id: "popcorn",
+        name: "Popcorn",
+        icon: "🍿",
+        rarity: "Mythic",
+        price: 10000000,
+        minValue: 6000000,
+        maxValue: 15000000,
+        packMin: 2,
+        packMax: 14,
+        packPrice: 20000000,
+        minStock: 5,
+        maxStock: 10
+    },
+
+    {
+        id: "strawberry-short-cake",
+        name: "Strawberry Short Cake",
+        icon: "🍓",
+        rarity: "Mythic",
+        price: 50000000,
+        minValue: 45000000,
+        maxValue: 55000000,
+        packMin: 5,
+        packMax: 20,
+        packPrice: 200000000,
+        minStock: 1,
+        maxStock: 5
     }
 ];
-
 
 /* =========================================================
    GAME STATE
@@ -225,7 +264,6 @@ let username = "";
 
 let redeemedCodes = [];
 
-
 /* =========================================================
    SOUNDTRACK
 ========================================================= */
@@ -235,42 +273,34 @@ const songs = [
         name: "Classic Easter",
         artist: "AXS Music"
     },
-
     {
         name: "Gymnopédie No. 1",
         artist: "Erik Satie"
     },
-
     {
         name: "Wedding Cocktail",
         artist: "AXS Music"
     },
-
     {
         name: "Do I Clench My Fists?",
         artist: "Ridgeclub"
     },
-
     {
         name: "Tropical Breeze",
         artist: "The Puahia Street Players"
     },
-
     {
         name: "Beginning Of The Dream",
         artist: "AZALI"
     },
-
     {
         name: "Orchestral Practice",
         artist: "AZALI"
     },
-
     {
         name: "Rematch",
         artist: "AZALI"
     },
-
     {
         name: "Gold",
         artist: "Koven"
@@ -278,19 +308,8 @@ const songs = [
 ];
 
 let currentSongIndex = 0;
-
 let musicPlaying = false;
-
 let audio = null;
-
-
-/*
-    Add authorized audio files/URLs here later.
-
-    Example:
-
-    "Classic Easter": "music/classic-easter.mp3"
-*/
 
 const audioSources = {
     "Classic Easter": "",
@@ -304,69 +323,42 @@ const audioSources = {
     "Gold": ""
 };
 
-
 /* =========================================================
-   RANDOM FUNCTIONS
+   UTILITIES
 ========================================================= */
 
 function randomInt(min, max) {
-
-    return Math.floor(
-        Math.random() * (max - min + 1)
-    ) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
 function randomFloat(min, max) {
-
     return Math.random() * (max - min) + min;
 }
 
-
-/* =========================================================
-   GENERAL HELPERS
-========================================================= */
-
-function getDessert(id) {
-
-    return desserts.find(
-        dessert => dessert.id === id
-    );
-}
-
-
 function formatMoney(value) {
-
     return Math.floor(value).toLocaleString();
 }
 
-
-function getValue(item) {
-
-    return Math.floor(
-        item.value * item.multiplier
-    );
+function getDessert(id) {
+    return desserts.find(d => d.id === id);
 }
 
+function getValue(item) {
+    return Math.floor(item.value * item.multiplier);
+}
 
 function showToast(message) {
-
-    const toast =
-        document.getElementById("toast");
+    const toast = document.getElementById("toast");
 
     if (!toast) return;
 
     toast.textContent = message;
-
     toast.classList.add("show");
 
     setTimeout(() => {
-
         toast.classList.remove("show");
-
     }, 2500);
 }
-
 
 /* =========================================================
    MUTATIONS
@@ -376,64 +368,40 @@ function createDessert(id) {
 
     const dessert = getDessert(id);
 
-    if (!dessert) {
-        return null;
-    }
-
     let value = randomFloat(
         dessert.minValue,
         dessert.maxValue
     );
 
     let mutation = "Normal";
-
     let multiplier = 1;
 
+    const deliciousRoll = Math.random();
 
-    /*
-        DELICIOUS
-        0.002% chance
-
-        0.002% = 0.00002
-    */
-
-    if (Math.random() < 0.00002) {
+    if (deliciousRoll < 0.00002) {
 
         mutation = "Delicious";
-
         multiplier = 150;
 
+    } else {
+
+        const bigRoll = Math.random();
+
+        if (bigRoll < 0.01) {
+
+            mutation = "Big";
+            multiplier = 10;
+        }
     }
-
-    /*
-        BIG
-        1% chance
-    */
-
-    else if (Math.random() < 0.01) {
-
-        mutation = "Big";
-
-        multiplier = 10;
-    }
-
 
     return {
-
-        uid:
-            Date.now() +
-            Math.random(),
-
+        uid: Date.now() + Math.random(),
         id: id,
-
         value: value,
-
         mutation: mutation,
-
         multiplier: multiplier
     };
 }
-
 
 /* =========================================================
    STOCK
@@ -445,17 +413,14 @@ function resetGoodsStock() {
 
     desserts.forEach(dessert => {
 
-        goodsStock[dessert.id] =
-            randomInt(
-                dessert.minStock,
-                dessert.maxStock
-            );
-
+        goodsStock[dessert.id] = randomInt(
+            dessert.minStock,
+            dessert.maxStock
+        );
     });
 
     renderGoods();
 }
-
 
 function resetPackStock() {
 
@@ -464,75 +429,47 @@ function resetPackStock() {
     desserts.forEach(dessert => {
 
         packStock[dessert.id] = true;
-
     });
 
     renderPacks();
 }
 
-
 /* =========================================================
-   BUY ONE DESSERT
+   BUY SINGLE
 ========================================================= */
 
 function buyDessert(id) {
 
-    const dessert =
-        getDessert(id);
+    const dessert = getDessert(id);
 
     if (!dessert) return;
 
-
     if (goodsStock[id] <= 0) {
 
-        showToast(
-            "That dessert is out of stock!"
-        );
-
+        showToast("That dessert is out of stock!");
         return;
     }
-
 
     if (money < dessert.price) {
 
-        showToast(
-            "You don't have enough money!"
-        );
-
+        showToast("You don't have enough money!");
         return;
     }
-
 
     money -= dessert.price;
 
     goodsStock[id]--;
 
-
-    const item =
-        createDessert(id);
-
-    if (item) {
-
-        inventory.push(item);
-    }
-
+    inventory.push(createDessert(id));
 
     updateMoney();
 
     renderGoods();
-
     renderInventory();
-
     renderSell();
 
-    saveGame();
-
-
-    showToast(
-        `Bought 1 ${dessert.name}!`
-    );
+    showToast(`Bought 1 ${dessert.name}!`);
 }
-
 
 /* =========================================================
    BUY PACK
@@ -540,208 +477,89 @@ function buyDessert(id) {
 
 function buyPack(id) {
 
-    const dessert =
-        getDessert(id);
+    const dessert = getDessert(id);
 
     if (!dessert) return;
 
-
     if (!packStock[id]) {
 
-        showToast(
-            "This pack is out of stock!"
-        );
-
+        showToast("This pack is out of stock!");
         return;
     }
-
 
     if (money < dessert.packPrice) {
 
-        showToast(
-            "You don't have enough money!"
-        );
-
+        showToast("You don't have enough money!");
         return;
     }
 
-
     money -= dessert.packPrice;
 
-
-    const amount =
-        randomInt(
-            dessert.packMin,
-            dessert.packMax
-        );
-
+    const amount = randomInt(
+        dessert.packMin,
+        dessert.packMax
+    );
 
     for (let i = 0; i < amount; i++) {
 
-        const item =
-            createDessert(id);
-
-        if (item) {
-
-            inventory.push(item);
-        }
+        inventory.push(
+            createDessert(id)
+        );
     }
 
-
-    /*
-        Each pack can only be purchased
-        once per stock rotation.
-    */
-
     packStock[id] = false;
-
 
     updateMoney();
 
     renderPacks();
-
     renderInventory();
-
     renderSell();
 
-    saveGame();
-
-
     showToast(
-        `Pack opened! You received ${amount} ${dessert.name}${amount === 1 ? "" : "s"}!`
+        `Bought a ${dessert.name} pack! Got ${amount}!`
     );
 }
 
-
 /* =========================================================
-   SELL
+   MONEY
 ========================================================= */
 
-function sellItem(uid) {
+function updateMoney() {
 
-    const index =
-        inventory.findIndex(
-            item => item.uid === uid
-        );
+    const moneyDisplay =
+        document.getElementById("moneyDisplay");
 
+    if (moneyDisplay) {
 
-    if (index === -1) return;
-
-
-    const item =
-        inventory[index];
-
-    const dessert =
-        getDessert(item.id);
-
-
-    const sellValue =
-        getValue(item);
-
-
-    money += sellValue;
-
-
-    inventory.splice(index, 1);
-
-
-    pantry =
-        pantry.filter(
-            itemUid => itemUid !== uid
-        );
-
-
-    updateMoney();
-
-    renderInventory();
-
-    renderSell();
-
-    renderPantry();
-
-    saveGame();
-
-
-    showToast(
-        `Sold ${dessert.name} for $${formatMoney(sellValue)}!`
-    );
-}
-
-
-/* =========================================================
-   PANTRY
-========================================================= */
-
-function togglePantry(uid) {
-
-    const index =
-        pantry.indexOf(uid);
-
-
-    if (index >= 0) {
-
-        pantry.splice(index, 1);
-
-    } else {
-
-        if (pantry.length >= 10) {
-
-            showToast(
-                "Your Pantry is full! Maximum: 10"
-            );
-
-            return;
-        }
-
-        pantry.push(uid);
+        moneyDisplay.textContent =
+            "$" + formatMoney(money);
     }
-
-
-    renderInventory();
-
-    renderPantry();
-
-    saveGame();
 }
 
-
 /* =========================================================
-   RENDER GOODS MERCHANT
+   GOODS MERCHANT
 ========================================================= */
 
 function renderGoods() {
 
-    const grid =
-        document.getElementById(
-            "goodsGrid"
-        );
+    const container =
+        document.getElementById("goodsList");
 
-    if (!grid) return;
+    if (!container) return;
 
-
-    grid.innerHTML = "";
-
+    container.innerHTML = "";
 
     desserts.forEach(dessert => {
 
         const stock =
-            goodsStock[dessert.id] || 0;
-
-
-        const rarityClass =
-            dessert.rarity.toLowerCase();
-
+            goodsStock[dessert.id] ?? 0;
 
         const card =
             document.createElement("div");
 
-
-        card.className =
-            "dessert-card";
-
+        card.className = "dessert-card";
 
         card.innerHTML = `
-
             <div class="dessert-icon">
                 ${dessert.icon}
             </div>
@@ -750,8 +568,15 @@ function renderGoods() {
                 ${dessert.name}
             </div>
 
-            <div class="rarity ${rarityClass}">
+            <div class="rarity ${dessert.rarity.toLowerCase()}">
                 ${dessert.rarity}
+            </div>
+
+            <div class="dessert-info">
+                Sell value:
+                $${formatMoney(dessert.minValue)}
+                -
+                $${formatMoney(dessert.maxValue)}
             </div>
 
             <div class="price">
@@ -759,172 +584,123 @@ function renderGoods() {
                 $${formatMoney(dessert.price)}
             </div>
 
-            <div class="value">
-                Value:
-                $${formatMoney(dessert.minValue)}
-                -
-                $${formatMoney(dessert.maxValue)}
-            </div>
-
             <div class="stock">
-                Stock:
-                ${stock}
+                Stock: ${stock}
             </div>
 
-            <div class="buy-row">
-
-                <button
-                    class="buy-btn"
-                    ${stock <= 0 ? "disabled" : ""}
-                    onclick="buyDessert('${dessert.id}')"
-                >
-                    Buy 1
-                </button>
-
-            </div>
+            <button
+                class="primary"
+                onclick="buyDessert('${dessert.id}')"
+                ${stock <= 0 ? "disabled" : ""}
+            >
+                Buy
+            </button>
         `;
 
-
-        grid.appendChild(card);
-
+        container.appendChild(card);
     });
 }
 
-
 /* =========================================================
-   RENDER PACK MERCHANT
+   PACK MERCHANT
 ========================================================= */
 
 function renderPacks() {
 
     const container =
-        document.getElementById(
-            "packsGrid"
-        );
+        document.getElementById("packList");
 
     if (!container) return;
 
-
     container.innerHTML = "";
-
 
     desserts.forEach(dessert => {
 
         const available =
-            packStock[dessert.id] !== false;
-
-
-        const rarityClass =
-            dessert.rarity.toLowerCase();
-
+            packStock[dessert.id];
 
         const card =
             document.createElement("div");
 
-
-        card.className =
-            "pack-card";
-
+        card.className = "dessert-card";
 
         card.innerHTML = `
-
-            <div class="pack-title">
+            <div class="dessert-icon">
                 ${dessert.icon}
+            </div>
+
+            <div class="dessert-name">
                 ${dessert.name} Pack
             </div>
 
-            <div class="rarity ${rarityClass}">
+            <div class="rarity ${dessert.rarity.toLowerCase()}">
                 ${dessert.rarity}
             </div>
 
-            <div class="pack-description">
-                Receive between
-                <strong>${dessert.packMin}</strong>
-                and
-                <strong>${dessert.packMax}</strong>
-                desserts.
-            </div>
-
-            <div class="pack-contents">
-                Possible amount:
+            <div class="dessert-info">
+                Contains:
                 ${dessert.packMin}
                 -
                 ${dessert.packMax}
             </div>
 
-            <div class="pack-price">
-                Pack Price:
+            <div class="price">
                 $${formatMoney(dessert.packPrice)}
             </div>
 
+            <div class="stock">
+                ${available ? "In Stock" : "Sold Out"}
+            </div>
+
             <button
-                class="pack-btn"
-                ${available ? "" : "disabled"}
+                class="primary"
                 onclick="buyPack('${dessert.id}')"
+                ${!available ? "disabled" : ""}
             >
-                ${available ? "Buy Pack" : "Sold Out"}
+                Buy Pack
             </button>
         `;
 
-
         container.appendChild(card);
-
     });
 }
 
-
 /* =========================================================
-   RENDER INVENTORY
+   INVENTORY
 ========================================================= */
 
 function renderInventory() {
 
     const container =
-        document.getElementById(
-            "inventoryList"
-        );
+        document.getElementById("inventoryList");
 
     if (!container) return;
 
-
     container.innerHTML = "";
-
 
     if (inventory.length === 0) {
 
-        container.innerHTML = `
-            <div class="empty">
+        container.innerHTML =
+            `<div class="empty">
                 Your inventory is empty.
-            </div>
-        `;
+            </div>`;
 
         return;
     }
-
 
     inventory.forEach(item => {
 
         const dessert =
             getDessert(item.id);
 
-
         if (!dessert) return;
 
-
-        const favorite =
-            pantry.includes(item.uid);
-
-
-        const card =
+        const row =
             document.createElement("div");
 
+        row.className = "inventory-item";
 
-        card.className =
-            "inventory-card";
-
-
-        card.innerHTML = `
-
+        row.innerHTML = `
             <div class="inventory-left">
 
                 <div class="inventory-icon">
@@ -933,203 +709,86 @@ function renderInventory() {
 
                 <div>
 
-                    <div class="inventory-name">
+                    <div class="dessert-name">
                         ${dessert.name}
+                    </div>
+
+                    <div class="${dessert.rarity.toLowerCase()}">
+                        ${dessert.rarity}
+                    </div>
+
+                    <div>
+                        ${item.mutation}
                     </div>
 
                     <div>
                         Value:
-                        $${formatMoney(
-                            getValue(item)
-                        )}
+                        $${formatMoney(getValue(item))}
                     </div>
-
-                    <span class="mutation">
-                        ${item.mutation}
-                        ×${item.multiplier}
-                    </span>
 
                 </div>
 
             </div>
 
-            <div>
+            <div class="inventory-actions">
 
                 <button
-                    class="favorite-btn"
-                    onclick="togglePantry(${item.uid})"
+                    class="secondary"
+                    onclick="sellItem('${item.uid}')"
                 >
-                    ${
-                        favorite
-                        ? "⭐ Remove"
-                        : "☆ Pantry"
-                    }
+                    Sell
+                </button>
+
+                <button
+                    class="secondary"
+                    onclick="sendToPantry('${item.uid}')"
+                >
+                    Pantry
                 </button>
 
             </div>
         `;
 
-
-        container.appendChild(card);
-
+        container.appendChild(row);
     });
 }
 
-
 /* =========================================================
-   RENDER PANTRY
-========================================================= */
-
-function renderPantry() {
-
-    const container =
-        document.getElementById(
-            "pantryList"
-        );
-
-    const count =
-        document.getElementById(
-            "pantryCount"
-        );
-
-
-    if (!container) return;
-
-
-    if (count) {
-
-        count.textContent =
-            pantry.length;
-    }
-
-
-    container.innerHTML = "";
-
-
-    const items =
-        inventory.filter(
-            item => pantry.includes(item.uid)
-        );
-
-
-    if (items.length === 0) {
-
-        container.innerHTML = `
-            <div class="empty">
-                Your Pantry is empty.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    items.forEach(item => {
-
-        const dessert =
-            getDessert(item.id);
-
-
-        if (!dessert) return;
-
-
-        const card =
-            document.createElement("div");
-
-
-        card.className =
-            "inventory-card";
-
-
-        card.innerHTML = `
-
-            <div class="inventory-left">
-
-                <div class="inventory-icon">
-                    ${dessert.icon}
-                </div>
-
-                <div>
-
-                    <div class="inventory-name">
-                        ${dessert.name}
-                    </div>
-
-                    <div>
-                        ${item.mutation}
-                        —
-                        $${formatMoney(
-                            getValue(item)
-                        )}
-                    </div>
-
-                </div>
-
-            </div>
-
-            <button
-                class="favorite-btn"
-                onclick="togglePantry(${item.uid})"
-            >
-                Remove
-            </button>
-        `;
-
-
-        container.appendChild(card);
-
-    });
-}
-
-
-/* =========================================================
-   RENDER SELL PAGE
+   SELL
 ========================================================= */
 
 function renderSell() {
 
     const container =
-        document.getElementById(
-            "sellList"
-        );
+        document.getElementById("sellList");
 
     if (!container) return;
 
-
     container.innerHTML = "";
-
 
     if (inventory.length === 0) {
 
-        container.innerHTML = `
-            <div class="empty">
+        container.innerHTML =
+            `<div class="empty">
                 Nothing to sell.
-            </div>
-        `;
+            </div>`;
 
         return;
     }
-
 
     inventory.forEach(item => {
 
         const dessert =
             getDessert(item.id);
 
-
         if (!dessert) return;
 
-
-        const card =
+        const row =
             document.createElement("div");
 
+        row.className = "inventory-item";
 
-        card.className =
-            "inventory-card";
-
-
-        card.innerHTML = `
-
+        row.innerHTML = `
             <div class="inventory-left">
 
                 <div class="inventory-icon">
@@ -1138,21 +797,16 @@ function renderSell() {
 
                 <div>
 
-                    <div class="inventory-name">
+                    <strong>
                         ${dessert.name}
-                    </div>
+                    </strong>
 
                     <div>
                         ${item.mutation}
                     </div>
 
                     <div>
-                        Sell for:
-                        <strong>
-                            $${formatMoney(
-                                getValue(item)
-                            )}
-                        </strong>
+                        $${formatMoney(getValue(item))}
                     </div>
 
                 </div>
@@ -1160,186 +814,234 @@ function renderSell() {
             </div>
 
             <button
-                class="sell-btn"
-                onclick="sellItem(${item.uid})"
+                class="primary"
+                onclick="sellItem('${item.uid}')"
             >
                 Sell
             </button>
         `;
 
-
-        container.appendChild(card);
-
+        container.appendChild(row);
     });
 }
 
+function sellItem(uid) {
 
-/* =========================================================
-   MONEY
-========================================================= */
-
-function updateMoney() {
-
-    const element =
-        document.getElementById(
-            "money"
+    const index =
+        inventory.findIndex(
+            item => String(item.uid) === String(uid)
         );
 
-    if (!element) return;
+    if (index === -1) return;
 
+    const item =
+        inventory[index];
 
-    element.textContent =
-        formatMoney(money);
+    const value =
+        getValue(item);
+
+    const dessert =
+        getDessert(item.id);
+
+    money += value;
+
+    inventory.splice(index, 1);
+
+    updateMoney();
+
+    renderInventory();
+    renderSell();
+
+    showToast(
+        `Sold ${dessert.name} for $${formatMoney(value)}!`
+    );
 }
 
-
 /* =========================================================
-   PAGE NAVIGATION
+   PANTRY
 ========================================================= */
 
-function showPage(page) {
+function sendToPantry(uid) {
 
-    document
-        .querySelectorAll(".page")
-        .forEach(section => {
+    const index =
+        inventory.findIndex(
+            item => String(item.uid) === String(uid)
+        );
 
-            section.classList.remove(
-                "active"
-            );
+    if (index === -1) return;
 
+    const item =
+        inventory[index];
+
+    inventory.splice(index, 1);
+
+    pantry.push(item);
+
+    renderInventory();
+    renderSell();
+    renderPantry();
+
+    showToast("Moved to pantry!");
+}
+
+function removeFromPantry(uid) {
+
+    const index =
+        pantry.findIndex(
+            item => String(item.uid) === String(uid)
+        );
+
+    if (index === -1) return;
+
+    const item =
+        pantry[index];
+
+    pantry.splice(index, 1);
+
+    inventory.push(item);
+
+    renderInventory();
+    renderSell();
+    renderPantry();
+
+    showToast("Moved to inventory!");
+}
+
+function renderPantry() {
+
+    const container =
+        document.getElementById("pantryList");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (pantry.length === 0) {
+
+        container.innerHTML =
+            `<div class="empty">
+                Your pantry is empty.
+            </div>`;
+
+        return;
+    }
+
+    pantry.forEach(item => {
+
+        const dessert =
+            getDessert(item.id);
+
+        if (!dessert) return;
+
+        const card =
+            document.createElement("div");
+
+        card.className = "pantry-item";
+
+        card.innerHTML = `
+            <div class="inventory-left">
+
+                <div class="inventory-icon">
+                    ${dessert.icon}
+                </div>
+
+                <div>
+
+                    <strong>
+                        ${dessert.name}
+                    </strong>
+
+                    <div class="${dessert.rarity.toLowerCase()}">
+                        ${dessert.rarity}
+                    </div>
+
+                    <div>
+                        ${item.mutation}
+                    </div>
+
+                    <div>
+                        Value:
+                        $${formatMoney(getValue(item))}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <button
+                class="secondary"
+                onclick="removeFromPantry('${item.uid}')"
+            >
+                Return to Inventory
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+/* =========================================================
+   TABS
+========================================================= */
+
+function showTab(tabName) {
+
+    document.querySelectorAll(".tab")
+        .forEach(tab => {
+            tab.classList.remove("active");
         });
 
-
-    document
-        .querySelectorAll(".nav button")
+    document.querySelectorAll("nav button")
         .forEach(button => {
-
-            button.classList.remove(
-                "active"
-            );
-
+            button.classList.remove("active");
         });
 
+    const tab =
+        document.getElementById(tabName);
 
-    const selectedPage =
-        document.getElementById(page);
-
-
-    if (selectedPage) {
-
-        selectedPage.classList.add(
-            "active"
-        );
+    if (tab) {
+        tab.classList.add("active");
     }
 
-
-    const navButton =
-        document.getElementById(
-            "nav-" + page
+    const button =
+        document.querySelector(
+            `nav button[data-tab="${tabName}"]`
         );
 
-
-    if (navButton) {
-
-        navButton.classList.add(
-            "active"
-        );
-    }
-
-
-    if (page === "inventory") {
-        renderInventory();
-    }
-
-
-    if (page === "pantry") {
-        renderPantry();
-    }
-
-
-    if (page === "sell") {
-        renderSell();
+    if (button) {
+        button.classList.add("active");
     }
 }
-
 
 /* =========================================================
-   SETTINGS
-========================================================= */
-
-function openSettings() {
-
-    const overlay =
-        document.getElementById(
-            "settingsOverlay"
-        );
-
-
-    if (overlay) {
-
-        overlay.classList.add(
-            "show"
-        );
-    }
-}
-
-
-function closeSettings() {
-
-    const overlay =
-        document.getElementById(
-            "settingsOverlay"
-        );
-
-
-    if (overlay) {
-
-        overlay.classList.remove(
-            "show"
-        );
-    }
-}
-
-
-/* =========================================================
-   CODE SYSTEM
+   CODES
 ========================================================= */
 
 function redeemCode() {
 
     const input =
-        document.getElementById(
-            "codeInput"
-        );
-
+        document.getElementById("codeInput");
 
     if (!input) return;
 
-
     const code =
-        input.value
-            .trim()
-            .toUpperCase();
+        input.value.trim().toUpperCase();
 
+    if (!code) {
+
+        showToast("Enter a code.");
+        return;
+    }
+
+    if (redeemedCodes.includes(code)) {
+
+        showToast("You already redeemed that code!");
+        return;
+    }
 
     if (code === "NEWGAMEWHATDIS") {
-
-
-        if (
-            redeemedCodes.includes(code)
-        ) {
-
-            showToast(
-                "You already redeemed this code!"
-            );
-
-            return;
-        }
-
-
-        /*
-            Give exactly 5 Lolipops.
-        */
 
         for (let i = 0; i < 5; i++) {
 
@@ -1348,53 +1050,26 @@ function redeemCode() {
             );
         }
 
-
         redeemedCodes.push(code);
 
-
         renderInventory();
-
         renderSell();
 
-        saveGame();
+        showToast("You got 5 Lolipops!");
 
+        input.value = "";
 
-        showToast(
-            "🎉 You received 5 Lolipops!"
-        );
-
+        return;
     }
 
-    else {
-
-        showToast(
-            "Invalid code."
-        );
-    }
-
-
-    input.value = "";
+    showToast("Invalid code.");
 }
 
-
 /* =========================================================
-   VOLUME
+   SETTINGS
 ========================================================= */
 
-function changeMusicVolume(value) {
-
-    const volumeText =
-        document.getElementById(
-            "musicVolumeText"
-        );
-
-
-    if (volumeText) {
-
-        volumeText.textContent =
-            value + "%";
-    }
-
+function setVolume(value) {
 
     if (audio) {
 
@@ -1403,16 +1078,14 @@ function changeMusicVolume(value) {
     }
 }
 
-
 /* =========================================================
-   COLORBLIND MODE
+   COLORBLIND
 ========================================================= */
 
 function setColorblindMode(mode) {
 
     const root =
         document.documentElement;
-
 
     if (mode === "normal") {
 
@@ -1430,10 +1103,8 @@ function setColorblindMode(mode) {
             "--accent",
             "#ff8c42"
         );
-    }
 
-
-    else if (mode === "protanopia") {
+    } else if (mode === "protanopia") {
 
         root.style.setProperty(
             "--bg",
@@ -1449,10 +1120,8 @@ function setColorblindMode(mode) {
             "--accent",
             "#0066cc"
         );
-    }
 
-
-    else if (mode === "deuteranopia") {
+    } else if (mode === "deuteranopia") {
 
         root.style.setProperty(
             "--bg",
@@ -1468,10 +1137,8 @@ function setColorblindMode(mode) {
             "--accent",
             "#0057b8"
         );
-    }
 
-
-    else if (mode === "tritanopia") {
+    } else if (mode === "tritanopia") {
 
         root.style.setProperty(
             "--bg",
@@ -1488,14 +1155,10 @@ function setColorblindMode(mode) {
             "#d10070"
         );
     }
-
-
-    saveSettings();
 }
 
-
 /* =========================================================
-   CUSTOM COLORS
+   COLORS
 ========================================================= */
 
 function changeBackground(color) {
@@ -1505,10 +1168,7 @@ function changeBackground(color) {
             "--bg",
             color
         );
-
-    saveSettings();
 }
-
 
 function changeTextColor(color) {
 
@@ -1517,91 +1177,56 @@ function changeTextColor(color) {
             "--text",
             color
         );
-
-    saveSettings();
 }
 
-
 /* =========================================================
-   SOUNDTRACK LIST
+   SOUNDTRACK UI
 ========================================================= */
 
 function renderSongs() {
 
     const list =
-        document.getElementById(
-            "songList"
-        );
-
+        document.getElementById("songList");
 
     if (!list) return;
 
-
     list.innerHTML = "";
-
 
     songs.forEach((song, index) => {
 
         const row =
             document.createElement("div");
 
-
-        row.className =
-            "song";
-
+        row.className = "song";
 
         row.innerHTML = `
-
             <span>
-                🎵
-                ${song.name}
+                🎵 ${song.name}
                 —
                 ${song.artist}
             </span>
 
-            <button
-                onclick="selectSong(${index})"
-            >
+            <button onclick="selectSong(${index})">
                 Play
             </button>
         `;
 
-
         list.appendChild(row);
-
     });
 }
 
-
-/* =========================================================
-   SELECT SONG
-========================================================= */
-
 function selectSong(index) {
-
-    if (
-        index < 0 ||
-        index >= songs.length
-    ) {
-        return;
-    }
-
 
     currentSongIndex = index;
 
+    const currentSong =
+        document.getElementById("currentSong");
 
-    const element =
-        document.getElementById(
-            "currentSong"
-        );
+    if (currentSong) {
 
-
-    if (element) {
-
-        element.textContent =
+        currentSong.textContent =
             songs[index].name;
     }
-
 
     if (musicPlaying) {
 
@@ -1609,111 +1234,68 @@ function selectSong(index) {
     }
 }
 
-
-/* =========================================================
-   PLAY / PAUSE
-========================================================= */
-
 function toggleMusic() {
 
-    const button =
-        document.getElementById(
-            "musicToggle"
-        );
+    musicPlaying = !musicPlaying;
 
+    const button =
+        document.getElementById("musicToggle");
 
     if (musicPlaying) {
 
-        musicPlaying = false;
+        if (button) {
+            button.textContent = "⏸ Pause";
+        }
 
+        playCurrentSong();
+
+    } else {
 
         if (button) {
-
-            button.textContent =
-                "▶ Play";
+            button.textContent = "▶ Play";
         }
-
 
         if (audio) {
-
             audio.pause();
         }
-
-
-        return;
     }
-
-
-    musicPlaying = true;
-
-
-    if (button) {
-
-        button.textContent =
-            "⏸ Pause";
-    }
-
-
-    playCurrentSong();
 }
-
-
-/* =========================================================
-   PLAY CURRENT SONG
-========================================================= */
 
 function playCurrentSong() {
 
     const song =
         songs[currentSongIndex];
 
-
-    const element =
-        document.getElementById(
-            "currentSong"
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            song.name;
-    }
-
-
     const source =
         audioSources[song.name];
 
+    const currentSong =
+        document.getElementById("currentSong");
 
-    /*
-        No audio file has been assigned yet.
-    */
+    if (currentSong) {
+
+        currentSong.textContent =
+            song.name;
+    }
 
     if (!source) {
 
         showToast(
-            `${song.name} is selected. Add an authorized audio file to play it.`
+            `${song.name} selected. Add its authorized audio file to play it.`
         );
 
         return;
     }
 
-
     if (audio) {
-
         audio.pause();
     }
-
 
     audio =
         new Audio(source);
 
-
     const volume =
-        document.getElementById(
-            "musicVolume"
-        );
-
+        document.getElementById("musicVolume");
 
     if (volume) {
 
@@ -1721,53 +1303,31 @@ function playCurrentSong() {
             Number(volume.value) / 100;
     }
 
-
-    audio.play().catch(() => {
-
-        showToast(
-            "The browser blocked automatic audio playback."
-        );
-
-    });
-
+    audio.play();
 
     audio.onended = () => {
 
         nextSong();
-
     };
 }
-
-
-/* =========================================================
-   NEXT SONG
-========================================================= */
 
 function nextSong() {
 
     currentSongIndex++;
 
-
-    if (
-        currentSongIndex >= songs.length
-    ) {
+    if (currentSongIndex >= songs.length) {
 
         currentSongIndex = 0;
     }
 
+    const currentSong =
+        document.getElementById("currentSong");
 
-    const element =
-        document.getElementById(
-            "currentSong"
-        );
+    if (currentSong) {
 
-
-    if (element) {
-
-        element.textContent =
+        currentSong.textContent =
             songs[currentSongIndex].name;
     }
-
 
     if (musicPlaying) {
 
@@ -1775,15 +1335,9 @@ function nextSong() {
     }
 }
 
-
-/* =========================================================
-   PREVIOUS SONG
-========================================================= */
-
 function previousSong() {
 
     currentSongIndex--;
-
 
     if (currentSongIndex < 0) {
 
@@ -1791,30 +1345,20 @@ function previousSong() {
             songs.length - 1;
     }
 
+    const currentSong =
+        document.getElementById("currentSong");
 
-    const element =
-        document.getElementById(
-            "currentSong"
-        );
+    if (currentSong) {
 
-
-    if (element) {
-
-        element.textContent =
+        currentSong.textContent =
             songs[currentSongIndex].name;
     }
-
 
     if (musicPlaying) {
 
         playCurrentSong();
     }
 }
-
-
-/* =========================================================
-   SHUFFLE
-========================================================= */
 
 function shuffleSongs() {
 
@@ -1824,30 +1368,20 @@ function shuffleSongs() {
             songs.length - 1
         );
 
+    const currentSong =
+        document.getElementById("currentSong");
 
-    const element =
-        document.getElementById(
-            "currentSong"
-        );
+    if (currentSong) {
 
-
-    if (element) {
-
-        element.textContent =
+        currentSong.textContent =
             songs[currentSongIndex].name;
     }
-
 
     if (musicPlaying) {
 
         playCurrentSong();
     }
 }
-
-
-/* =========================================================
-   CUSTOM SONG ID
-========================================================= */
 
 function addCustomSong() {
 
@@ -1860,71 +1394,52 @@ function addCustomSong() {
         return;
     }
 
-
     const input =
-        document.getElementById(
-            "songIdInput"
-        );
-
+        document.getElementById("songIdInput");
 
     if (!input) return;
-
 
     const id =
         input.value.trim();
 
-
     if (!id) {
 
-        showToast(
-            "Enter a song ID."
-        );
-
+        showToast("Enter a song ID.");
         return;
     }
 
-
     songs.push({
-
-        name:
-            "Custom Song " + id,
-
-        artist:
-            "Custom",
-
+        name: "Custom Song " + id,
+        artist: "Custom",
         id: id
     });
 
-
     renderSongs();
-
 
     input.value = "";
 
-
-    showToast(
-        "Custom song added!"
-    );
+    showToast("Custom song added!");
 }
 
-
 /* =========================================================
-   SIGN IN
+   ACCOUNT
 ========================================================= */
 
 function signIn() {
 
-    const email =
-        document.getElementById(
-            "loginEmail"
-        )?.value.trim();
+    const emailInput =
+        document.getElementById("loginEmail");
 
+    const nameInput =
+        document.getElementById("loginName");
+
+    if (!emailInput || !nameInput) return;
+
+    const email =
+        emailInput.value.trim();
 
     const name =
-        document.getElementById(
-            "loginName"
-        )?.value.trim();
-
+        nameInput.value.trim();
 
     if (!email || !name) {
 
@@ -1935,33 +1450,21 @@ function signIn() {
         return;
     }
 
-
     signedIn = true;
 
     username = name;
 
+    const accountStatus =
+        document.getElementById("accountStatus");
 
-    const status =
-        document.getElementById(
-            "accountStatus"
-        );
+    if (accountStatus) {
 
-
-    if (status) {
-
-        status.textContent =
+        accountStatus.textContent =
             `✅ Signed in as ${username}`;
     }
 
-
-    saveGame();
-
-
-    showToast(
-        "Signed in!"
-    );
+    showToast("Signed in!");
 }
-
 
 /* =========================================================
    SUGGESTIONS
@@ -1978,19 +1481,13 @@ function sendSuggestion() {
         return;
     }
 
-
     const input =
-        document.getElementById(
-            "suggestionInput"
-        );
-
+        document.getElementById("suggestionInput");
 
     if (!input) return;
 
-
     const message =
         input.value.trim();
-
 
     if (!message) {
 
@@ -2001,38 +1498,24 @@ function sendSuggestion() {
         return;
     }
 
-
-    /*
-        Temporary email solution.
-
-        This opens the user's email application.
-
-        A true automatic system will need
-        a secure backend/email service.
-    */
-
     const subject =
         encodeURIComponent(
             "Cakes & Candies Suggestion"
         );
-
 
     const body =
         encodeURIComponent(
             `From: ${username}\n\n${message}`
         );
 
-
     window.location.href =
         `mailto:franklyndavid770@gmail.com?subject=${subject}&body=${body}`;
-
 
     input.value = "";
 }
 
-
 /* =========================================================
-   5-MINUTE STOCK SYSTEM
+   STOCK TIMER
 ========================================================= */
 
 function getNextFiveMinuteTimestamp() {
@@ -2040,34 +1523,26 @@ function getNextFiveMinuteTimestamp() {
     const now =
         new Date();
 
-
     const next =
         new Date(now);
 
-
     next.setSeconds(0);
-
     next.setMilliseconds(0);
-
 
     const minutes =
         next.getMinutes();
-
 
     const nextMultiple =
         Math.ceil(
             (minutes + 0.0001) / 5
         ) * 5;
 
-
     next.setMinutes(
         nextMultiple
     );
 
-
     if (
-        next.getTime() <=
-        now.getTime()
+        next.getTime() <= now.getTime()
     ) {
 
         next.setMinutes(
@@ -2075,44 +1550,33 @@ function getNextFiveMinuteTimestamp() {
         );
     }
 
-
     return next;
 }
 
-
 let nextStockReset =
     getNextFiveMinuteTimestamp();
-
 
 function updateStockTimer() {
 
     const now =
         new Date();
 
-
     let difference =
         nextStockReset.getTime()
-        -
-        now.getTime();
-
+        - now.getTime();
 
     if (difference <= 0) {
 
         resetGoodsStock();
-
         resetPackStock();
-
 
         nextStockReset =
             getNextFiveMinuteTimestamp();
 
-
         difference =
             nextStockReset.getTime()
-            -
-            now.getTime();
+            - now.getTime();
     }
-
 
     const totalSeconds =
         Math.max(
@@ -2122,45 +1586,30 @@ function updateStockTimer() {
             )
         );
 
-
     const minutes =
         Math.floor(
             totalSeconds / 60
         );
 
-
     const seconds =
         totalSeconds % 60;
 
-
     const formatted =
-        String(minutes)
-            .padStart(2, "0")
-        +
-        ":"
-        +
-        String(seconds)
-            .padStart(2, "0");
-
+        String(minutes).padStart(2, "0")
+        + ":"
+        + String(seconds).padStart(2, "0");
 
     const goodsTimer =
-        document.getElementById(
-            "goodsTimer"
-        );
-
+        document.getElementById("goodsTimer");
 
     const packsTimer =
-        document.getElementById(
-            "packsTimer"
-        );
-
+        document.getElementById("packsTimer");
 
     if (goodsTimer) {
 
         goodsTimer.textContent =
             formatted;
     }
-
 
     if (packsTimer) {
 
@@ -2169,39 +1618,26 @@ function updateStockTimer() {
     }
 }
 
-
 /* =========================================================
-   SAVE GAME
+   LOCAL SAVE
 ========================================================= */
 
 function saveGame() {
 
     const saveData = {
-
         money,
-
         inventory,
-
         pantry,
-
         signedIn,
-
         username,
-
         redeemedCodes
     };
-
 
     localStorage.setItem(
         "cakesAndCandiesSave",
         JSON.stringify(saveData)
     );
 }
-
-
-/* =========================================================
-   LOAD GAME
-========================================================= */
 
 function loadGame() {
 
@@ -2210,226 +1646,76 @@ function loadGame() {
             "cakesAndCandiesSave"
         );
 
-
     if (!saved) return;
-
 
     try {
 
         const data =
             JSON.parse(saved);
 
-
         money =
             data.money ?? 1000;
-
 
         inventory =
             data.inventory ?? [];
 
-
         pantry =
             data.pantry ?? [];
-
 
         signedIn =
             data.signedIn ?? false;
 
-
         username =
             data.username ?? "";
-
 
         redeemedCodes =
             data.redeemedCodes ?? [];
 
-
         if (signedIn) {
 
-            const status =
+            const accountStatus =
                 document.getElementById(
                     "accountStatus"
                 );
 
+            if (accountStatus) {
 
-            if (status) {
-
-                status.textContent =
+                accountStatus.textContent =
                     `✅ Signed in as ${username}`;
             }
         }
 
-    }
+    } catch (error) {
 
-    catch (error) {
-
-        console.error(
-            "Save could not be loaded.",
-            error
+        console.log(
+            "Save could not be loaded."
         );
     }
 }
 
-
 /* =========================================================
-   SETTINGS SAVE
-========================================================= */
-
-function saveSettings() {
-
-    const settings = {
-
-        background:
-            getComputedStyle(
-                document.documentElement
-            ).getPropertyValue("--bg"),
-
-        text:
-            getComputedStyle(
-                document.documentElement
-            ).getPropertyValue("--text"),
-
-        musicVolume:
-            document.getElementById(
-                "musicVolume"
-            )?.value ?? 70,
-
-        colorblindMode:
-            document.getElementById(
-                "colorblindMode"
-            )?.value ?? "normal"
-    };
-
-
-    localStorage.setItem(
-        "cakesAndCandiesSettings",
-        JSON.stringify(settings)
-    );
-}
-
-
-/* =========================================================
-   LOAD SETTINGS
-========================================================= */
-
-function loadSettings() {
-
-    const saved =
-        localStorage.getItem(
-            "cakesAndCandiesSettings"
-        );
-
-
-    if (!saved) return;
-
-
-    try {
-
-        const settings =
-            JSON.parse(saved);
-
-
-        if (settings.background) {
-
-            document.documentElement
-                .style.setProperty(
-                    "--bg",
-                    settings.background
-                );
-        }
-
-
-        if (settings.text) {
-
-            document.documentElement
-                .style.setProperty(
-                    "--text",
-                    settings.text
-                );
-        }
-
-
-        const volume =
-            document.getElementById(
-                "musicVolume"
-            );
-
-
-        if (
-            volume &&
-            settings.musicVolume
-        ) {
-
-            volume.value =
-                settings.musicVolume;
-
-            changeMusicVolume(
-                settings.musicVolume
-            );
-        }
-
-
-        const colorblind =
-            document.getElementById(
-                "colorblindMode"
-            );
-
-
-        if (
-            colorblind &&
-            settings.colorblindMode
-        ) {
-
-            colorblind.value =
-                settings.colorblindMode;
-        }
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Settings could not be loaded.",
-            error
-        );
-    }
-}
-
-
-/* =========================================================
-   INITIALIZE GAME
+   INITIALIZE
 ========================================================= */
 
 function initGame() {
 
     loadGame();
 
-    loadSettings();
-
-
     resetGoodsStock();
-
     resetPackStock();
 
-
     renderInventory();
-
     renderPantry();
-
     renderSell();
-
     renderSongs();
 
-
     updateMoney();
-
 
     updateStockTimer();
 }
 
-
 /* =========================================================
-   AUTOMATIC SAVING
+   AUTO SAVE
 ========================================================= */
 
 setInterval(() => {
@@ -2438,20 +1724,14 @@ setInterval(() => {
 
 }, 5000);
 
-
-/* =========================================================
-   STOCK TIMER
-========================================================= */
-
 setInterval(() => {
 
     updateStockTimer();
 
 }, 1000);
 
-
 /* =========================================================
-   START GAME
+   START
 ========================================================= */
 
 initGame();
